@@ -1,0 +1,70 @@
+;INITIAL SETTUP STUFF
+
+RM
+MD0, 0SG10, SI100, SD15, IL16383, FR1, RI1, PH0, SE16383,
+MD1, 1VM, MC40, MN, DI1, GO, WA100
+MD2, RW538, IB-5000, NO, MJ3, RP
+MD3, 1PM, MR10000, GO, WS200, 1DH
+MD4, 1PM, MN, GH, WS100, MG"Axis 1 HOMED & READY", MJ10
+;*****************************************************************
+;SELECT TEST PROGRAM
+MD10, VI"PRESS ENTER TO CYCLE TEST", MJ11
+
+;CLEAR REGISTERS
+MD11, UM1, AL0, AR10, AR11, AR12, AR15, AR20
+
+;MAIN EXECUTION SEQUENCE (MC20 IS THE BULK OF IT)
+MD12, MC20, MG" MAX TOUCHDOWN LOCATION= ":20, MJ4
+
+;*********************************************************************
+;SOFT-LAND
+MD20, VM, MN, MC40, DI0, GO, WA100
+MD21, RW538, IG100, NO, MJ22, RP
+
+
+
+
+;ENTER CONSTANT FORCE MODE
+MD22, RL494, AR20, MC26, QM0, SQ5000
+
+
+
+
+;READ POSITION - IF IN RANGE COUNTER++ IF OUT OF RANGE COUNTER RESET
+MD23, WA5, RL494, AR20, IG@11, MC25, MJ24, MC26, MJ24
+
+MD24, RA15, IG50, MJ30, NO, MJ23
+
+
+
+
+;CHECK RANGE AND INCRIMENT IF TRUE
+MD25, IG@12, MC26, RC, RA15, AA1, AR15, RC
+
+
+;RESET EVERYTHING
+MD26, AL0, AR15, RA20, AS50, AR11, RA20, AA50, AR12, RC
+
+
+
+;
+
+;Originally this was a for loop, I turned it into a while loop, since we do not need to restrict the amount of cycles this has, as it will eventually break out of the loop to be in position mode (this is not a conventional while loop I simply just Mj54 over and over until the counter condition allows the code to get to that Mj60);
+
+;********************************************************************
+
+;ENTER POSITION MODE FOR 500 CYCLES
+MD30, PM, MC41
+MD31, WA10, MA@20, TQ, RP1000, RC
+
+;*********************************************************************
+;USED FOR SOFT-LAND           
+MD40, 0SA40000, SV500000, SQ10000, RC
+MD41, 0SA80000, SV1000000, SQ32767, RC
+;**********************************************************************
+
+
+
+
+
+
